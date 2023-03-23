@@ -370,4 +370,44 @@
         <addNotNullConstraint tableName="article" columnName="html" columnDataType="mediumtext"/>
     </changeSet>
 
+    <changeSet id="media-uuid-1" author="Alexis Giust">
+        <dropPrimaryKey tableName="media"/>
+
+        <rollback>
+            <addPrimaryKey tableName="media" columnNames="hash"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="media-uuid-2" author="Alexis Giust">
+        <dropNotNullConstraint tableName="media" columnName="hash" columnDataType="int"/>
+        <renameColumn tableName="media" oldColumnName="hash" newColumnName="filename" columnDataType="int"/>
+    </changeSet>
+
+    <changeSet id="media-uuid-3" author="Alexis Giust">
+        <addColumn tableName="media">
+            <column name="uuid" type="uuid"/>
+        </addColumn>
+
+        <!-- The new column is the first. -->
+        <modifySql>
+            <append value=" FIRST"/>
+        </modifySql>
+    </changeSet>
+
+    <changeSet id="media-uuid-4" author="Alexis Giust">
+        <update tableName="media">
+            <column name="uuid" valueComputed="uuid()"/>
+        </update>
+
+        <rollback>
+            <update tableName="media">
+                <column name="uuid" value=""/>
+            </update>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="media-uuid-5" author="Alexis Giust">
+        <addPrimaryKey tableName="media" columnNames="uuid"/>
+    </changeSet>
+
 </databaseChangeLog>
